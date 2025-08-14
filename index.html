@@ -17,14 +17,6 @@ header a.streamer-btn { background:#ff9800; }
 .rank a:hover { background:#1e7e34; }
 .hidden { display:none; }
 
-/* Modal */
-.modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); }
-.modal-content { background:white; margin:10% auto; padding:20px; border-radius:10px; width:300px; text-align:center; }
-input { width:90%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:16px; }
-button { padding:10px 20px; margin:10px 5px; border:none; border-radius:5px; background:#007bff; color:white; font-weight:bold; cursor:pointer; }
-button:hover { background:#0056b3; }
-.close-btn { background:red; }
-
 /* دکمه بازگشت */
 .back-btn {
     background:#ff9800;
@@ -36,6 +28,28 @@ button:hover { background:#0056b3; }
     font-size:14px;
 }
 .back-btn:hover { background:#e68900; }
+
+/* بخش چت */
+.chat-box {
+    background:pink;
+    border-radius:10px;
+    padding:10px;
+    width:300px;
+    float:left;
+    margin-left:20px;
+}
+.messages {
+    height:200px;
+    overflow-y:auto;
+    background:white;
+    border-radius:5px;
+    padding:5px;
+    margin-bottom:10px;
+}
+.messages p { margin:5px 0; padding:5px; border-radius:5px; }
+.admin { background:lightblue; }
+.owner { background:gold; }
+input, button { padding:8px; border-radius:5px; border:1px solid #ccc; }
 </style>
 </head>
 <body>
@@ -58,11 +72,6 @@ button:hover { background:#0056b3; }
     <div class="rank"><h3>Ngafnd - 63,000 تومان</h3><a href="#">خرید</a></div>
     <div class="rank"><h3>Sponsor - 73,000 تومان</h3><a href="#">خرید</a></div>
     <div class="rank"><h3>Admin - 150,000 تومان</h3><a href="#">خرید</a></div>
-
-    <h2>آی‌پی سرورها</h2>
-    <p>سرور 1: IP اینجا</p>
-    <p>سرور 2: IP اینجا</p>
-    <p>سرور 3: IP اینجا</p>
 </div>
 
 <!-- بخش استریمرها -->
@@ -71,24 +80,37 @@ button:hover { background:#0056b3; }
     <h2>لیست استریمرها</h2>
     <img src="streamer1.jpg" alt="استریمر 1" style="width:200px; margin:10px;">
     <img src="streamer2.jpg" alt="استریمر 2" style="width:200px; margin:10px;">
+
+    <!-- بخش چت با مدیریت -->
+    <div class="chat-box">
+        <h3>💬 صحبت با مدیریت</h3>
+        <div class="messages" id="chatMessages"></div>
+        <input type="text" id="chatInput" placeholder="پیام خود را بنویسید">
+        <button onclick="sendMessage()">ارسال</button>
+    </div>
 </div>
 
 <!-- Modal ثبت‌نام / ورود -->
-<div id="authModal" class="modal">
-    <div class="modal-content">
+<div id="authModal" class="modal hidden" style="background:rgba(0,0,0,0.6); position:fixed; top:0; left:0; width:100%; height:100%; display:none;">
+    <div style="background:white; padding:20px; border-radius:10px; width:300px; margin:10% auto;">
         <h2>ثبت‌نام</h2>
-        <input type="email" id="regEmail" placeholder="جیمیل">
+        <input type="text" id="regName" placeholder="نام کاربری">
         <input type="password" id="regPass" placeholder="رمز عبور">
         <button onclick="register()">ثبت‌نام</button>
         <h2>ورود</h2>
-        <input type="email" id="loginEmail" placeholder="جیمیل">
+        <input type="text" id="loginName" placeholder="نام کاربری">
         <input type="password" id="loginPass" placeholder="رمز عبور">
         <button onclick="login()">ورود</button>
-        <button class="close-btn" onclick="closeModal()">بستن</button>
+        <button style="background:red; color:white;" onclick="closeModal()">بستن</button>
     </div>
 </div>
 
 <script>
+// لیست ادمین‌ها و مالک
+const ADMINS = ["mod1", "adminuser"];
+const OWNER = "owneruser";
+let currentUser = null;
+
 function openModal() {
     document.getElementById('authModal').style.display = 'block';
 }
@@ -96,32 +118,58 @@ function closeModal() {
     document.getElementById('authModal').style.display = 'none';
 }
 function register() {
-    const email = document.getElementById('regEmail').value.trim();
+    const name = document.getElementById('regName').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    if(!email || !pass){
+    if(!name || !pass){
         alert('لطفا همه فیلدها را پر کنید');
         return;
     }
-    const userData = {email,pass};
-    localStorage.setItem(email, JSON.stringify(userData));
+    if(localStorage.getItem("user_"+name)){
+        alert('این نام کاربری قبلا ثبت شده است');
+        return;
+    }
+    const userData = {name, pass};
+    localStorage.setItem("user_"+name, JSON.stringify(userData));
     alert('ثبت‌نام موفقیت‌آمیز بود، حالا وارد شوید.');
 }
 function login() {
-    const email = document.getElementById('loginEmail').value.trim();
+    const name = document.getElementById('loginName').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
-    const dataStr = localStorage.getItem(email);
+    const dataStr = localStorage.getItem("user_"+name);
     if(!dataStr){
-        alert('کاربری با این ایمیل یافت نشد');
+        alert('کاربری با این نام یافت نشد');
         return;
     }
     const data = JSON.parse(dataStr);
     if(data.pass===pass){
+        currentUser = name;
         closeModal();
-        document.getElementById('main-section').classList.remove('hidden');
-        document.getElementById('streamers').classList.add('hidden');
+        alert('خوش آمدید '+name);
     } else {
-        alert('اطلاعات وارد شده اشتباه است');
+        alert('رمز عبور اشتباه است');
     }
+}
+
+function sendMessage(){
+    if(!currentUser){
+        alert('ابتدا وارد شوید');
+        return;
+    }
+    const msg = document.getElementById('chatInput').value.trim();
+    if(!msg) return;
+
+    const msgElem = document.createElement('p');
+    if(currentUser === OWNER){
+        msgElem.className = 'owner';
+        msgElem.textContent = currentUser + " 👑: " + msg;
+    } else if(ADMINS.includes(currentUser)){
+        msgElem.className = 'admin';
+        msgElem.textContent = currentUser + " 🛡️: " + msg;
+    } else {
+        msgElem.textContent = currentUser + ": " + msg;
+    }
+    document.getElementById('chatMessages').appendChild(msgElem);
+    document.getElementById('chatInput').value = '';
 }
 
 // رفتن به بخش استریمرها
