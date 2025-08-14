@@ -2,38 +2,41 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<title>ngafnd - ورود با شماره</title>
+<title>ngafnd - خرید رنک</title>
 <style>
 body { font-family:sans-serif; background:#f0f0f0; text-align:center; margin:0; padding:0;}
-header { background:#333; color:white; padding:10px; font-size:24px;}
-.container { max-width:800px; margin:auto; padding:20px;}
+header { background:#333; color:white; padding:10px; font-size:24px; }
+.container { max-width:900px; margin:auto; padding:20px; }
 .hidden { display:none; }
 input { padding:8px; margin:5px; width:80%; }
 button { padding:10px 15px; margin:5px; cursor:pointer; }
-.rank { background:white; padding:15px; margin:10px; border-radius:8px; display:inline-block; width:200px; }
+.rank { background:white; padding:15px; margin:10px; border-radius:8px; display:inline-block; width:200px; vertical-align:top;}
 .rank img { width:100px; height:100px; }
-.support-btn { background:#28a745; color:white; text-decoration:none; padding:10px 20px; border-radius:5px; }
+.support-btn { background:#28a745; color:white; text-decoration:none; padding:10px 20px; border-radius:5px; display:inline-block; margin:10px 0;}
+h2 { margin-top:20px; }
 </style>
 </head>
 <body>
 
-<header>ngafnd</header>
+<header>ngafnd | <a class="support-btn" href="https://reymit.ir/kiyagamer13903" target="_blank">💖 حمایت</a></header>
 
 <div id="auth-section" class="container">
-    <h2>ورود با شماره موبایل</h2>
-    <input type="text" id="phone" placeholder="شماره موبایل"><br>
-    <button onclick="sendCode()">دریافت کد</button>
+    <h2>ثبت‌نام</h2>
+    <input type="text" id="regPhone" placeholder="شماره تلفن"><br>
+    <input type="email" id="regEmail" placeholder="جیمیل"><br>
+    <input type="text" id="regMinecraft" placeholder="اکانت ماینکرافت"><br>
+    <input type="password" id="regPass" placeholder="رمز عبور"><br>
+    <button onclick="register()">ثبت‌نام</button>
 
-    <div id="code-section" class="hidden">
-        <input type="text" id="codeInput" placeholder="کد ۴ رقمی"><br>
-        <button onclick="verifyCode()">ورود</button>
-        <p id="codeMessage" style="color:#555;font-size:14px;margin-top:8px;"></p>
-    </div>
+    <h2>ورود</h2>
+    <input type="email" id="loginEmail" placeholder="جیمیل"><br>
+    <input type="password" id="loginPass" placeholder="رمز عبور"><br>
+    <input type="text" id="loginMinecraft" placeholder="اکانت ماینکرافت"><br>
+    <input type="password" id="loginMinecraftPass" placeholder="رمز اکانت ماینکرافت"><br>
+    <button onclick="login()">ورود</button>
 </div>
 
 <div id="main-section" class="container hidden">
-    <a class="support-btn" href="https://reymit.ir/kiyagamer13903" target="_blank">💖 حمایت</a>
-
     <h2>خرید رنک</h2>
     <div class="rank">
         <img src="https://minecraft.wiki/images/Iron_Ingot_JE2_BE2.png" alt="Iron">
@@ -78,28 +81,37 @@ button { padding:10px 15px; margin:5px; cursor:pointer; }
 </div>
 
 <script>
-let currentCode = '';
-
-function sendCode() {
-    const phone = document.getElementById('phone').value.trim();
-    if(!phone.match(/^\d{10,}$/)) {
-        alert('شماره موبایل معتبر وارد کنید');
+function register() {
+    const phone = document.getElementById('regPhone').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const mc = document.getElementById('regMinecraft').value.trim();
+    const pass = document.getElementById('regPass').value.trim();
+    if(!phone || !email || !mc || !pass){
+        alert('لطفا همه فیلدها را پر کنید');
         return;
     }
-    // تولید کد ۴ رقمی تصادفی
-    currentCode = Math.floor(1000 + Math.random()*9000).toString();
-    document.getElementById('code-section').classList.remove('hidden');
-    document.getElementById('codeMessage').innerText = 
-        'کد ورود شبیه‌سازی شد: ' + currentCode + ' (در واقع برای آزمایش نمایش داده شده)';
+    // ذخیره اطلاعات در localStorage ساده
+    const userData = {phone,email,mc,pass};
+    localStorage.setItem(email, JSON.stringify(userData));
+    alert('ثبت‌نام موفقیت‌آمیز بود، حالا وارد شوید.');
 }
 
-function verifyCode() {
-    const input = document.getElementById('codeInput').value.trim();
-    if(input === currentCode) {
+function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+    const mc = document.getElementById('loginMinecraft').value.trim();
+    const mcPass = document.getElementById('loginMinecraftPass').value.trim();
+    const dataStr = localStorage.getItem(email);
+    if(!dataStr){
+        alert('کاربری با این ایمیل یافت نشد');
+        return;
+    }
+    const data = JSON.parse(dataStr);
+    if(data.pass===pass && data.mc===mc && mcPass===pass){
         document.getElementById('auth-section').classList.add('hidden');
         document.getElementById('main-section').classList.remove('hidden');
     } else {
-        alert('کد اشتباه است');
+        alert('اطلاعات وارد شده اشتباه است');
     }
 }
 </script>
