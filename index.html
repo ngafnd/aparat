@@ -12,14 +12,15 @@ body {
   margin: 0;
   padding: 0;
 }
-#loginBox, #content {
-  margin-top: 100px;
+.container {
+  margin-top: 80px;
 }
 input {
   padding: 10px;
   font-size: 16px;
   border-radius: 8px;
   border: none;
+  margin: 5px;
 }
 button {
   padding: 10px 15px;
@@ -43,4 +44,66 @@ a.button {
 </head>
 <body>
 
-<div id
+<div id="registerBox" class="container">
+  <h2>ثبت‌نام</h2>
+  <input type="text" id="regUsername" placeholder="نام کاربری"><br>
+  <input type="password" id="regPassword" placeholder="رمز عبور"><br>
+  <button onclick="registerUser()">ثبت‌نام</button>
+  <p>یا <a href="#" onclick="showLogin()">وارد شوید</a></p>
+</div>
+
+<div id="loginBox" class="container" style="display:none;">
+  <h2>ورود</h2>
+  <input type="text" id="loginUsername" placeholder="نام کاربری"><br>
+  <input type="password" id="loginPassword" placeholder="رمز عبور"><br>
+  <button onclick="loginUser()">ورود</button>
+  <p>یا <a href="#" onclick="showRegister()">ثبت‌نام کنید</a></p>
+</div>
+
+<div id="content" class="container" style="display:none;">
+  <h1>صفحه حمایت</h1>
+  <p>برای حمایت از ما روی دکمه زیر کلیک کنید:</p>
+  <a href="https://reymit.ir/kiyagamer13903" target="_blank" class="button">حمایت</a>
+</div>
+
+<script>
+// نمایش فرم‌ها
+function showLogin(){
+  document.getElementById('registerBox').style.display = 'none';
+  document.getElementById('loginBox').style.display = 'block';
+}
+function showRegister(){
+  document.getElementById('loginBox').style.display = 'none';
+  document.getElementById('registerBox').style.display = 'block';
+}
+
+// ثبت‌نام
+function registerUser(){
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
+  if(username && password){
+    localStorage.setItem('user_' + username, password);
+    alert('ثبت‌نام با موفقیت انجام شد! حالا وارد شوید.');
+    showLogin();
+  } else {
+    alert('لطفاً نام کاربری و رمز را وارد کنید.');
+  }
+}
+
+// ورود
+function loginUser(){
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const storedPass = localStorage.getItem('user_' + username);
+  if(storedPass && storedPass === password){
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('registerBox').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  } else {
+    alert('نام کاربری یا رمز اشتباه است.');
+  }
+}
+</script>
+
+</body>
+</html>
