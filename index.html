@@ -6,11 +6,11 @@
 <style>
 body { font-family:sans-serif; background:#f2f2f2; margin:0; padding:0; direction:rtl; }
 header { background:#222; color:white; padding:10px 20px; font-size:24px; display:flex; justify-content:space-between; align-items:center; }
-header .left { display:flex; gap:10px; }
-header a, header button { color:white; text-decoration:none; padding:8px 12px; border-radius:5px; border:none; cursor:pointer; font-size:14px; }
+header .left { display:flex; gap:10px; align-items:center; }
+header a { color:white; text-decoration:none; padding:8px 12px; border-radius:5px; }
 header a.support-btn { background:#28a745; }
 header a.streamer-btn { background:#ff9800; }
-header button.owner-btn { background:#6f42c1; }
+header button { padding:8px 12px; border:none; border-radius:5px; cursor:pointer; }
 .container { max-width:1000px; margin:auto; padding:20px; }
 .rank { display:inline-block; background:white; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); padding:15px; margin:10px; width:180px; vertical-align:top; text-align:center; }
 .rank h3 { margin:10px 0; }
@@ -29,6 +29,15 @@ button:hover { background:#0056b3; }
 /* دکمه بازگشت */
 .back-btn { background:#ff9800; color:white; border:none; border-radius:5px; padding:8px 12px; cursor:pointer; font-size:14px; }
 .back-btn:hover { background:#e68900; }
+
+/* چت مدیریت */
+#chatBox { background:#ffc0cb; padding:10px; border-radius:10px; max-height:300px; overflow-y:auto; margin-top:10px; }
+#chatInput { width:80%; padding:5px; }
+#chatSend { padding:5px 10px; background:#ff4081; color:white; border:none; border-radius:5px; cursor:pointer; }
+
+/* بخش پروفایل */
+#profileSection { background:white; padding:15px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-top:10px; }
+#profileSection img { width:100px; height:100px; border-radius:50%; object-fit:cover; }
 </style>
 </head>
 <body>
@@ -37,7 +46,7 @@ button:hover { background:#0056b3; }
     <div class="left">
         <a class="support-btn" href="https://reymit.ir/kiyagamer13903" target="_blank">💖 حمایت</a>
         <a class="streamer-btn" href="#streamers">🎥 لیست استریمرها</a>
-        <button class="owner-btn" onclick="becomeOwner()">👑 مالک شدن</button>
+        <button onclick="toggleChat()">💬 صحبت با مدیریت</button>
     </div>
     ngafnd
     <button onclick="openModal()">ثبت‌نام / ورود</button>
@@ -45,18 +54,33 @@ button:hover { background:#0056b3; }
 
 <div id="main-section" class="container">
     <h2>خرید رنک</h2>
-    <div class="rank"><h3>Iron - 10,000 تومان</h3><a href="#">خرید</a></div>
-    <div class="rank"><h3>Gold - 25,000 تومان</h3><a href="#">خرید</a></div>
-    <div class="rank"><h3>Diamond - 40,000 تومان</h3><a href="#">خرید</a></div>
-    <div class="rank"><h3>Emerald - 57,000 تومان</h3><a href="#">خرید</a></div>
-    <div class="rank"><h3>Ngafnd - 63,000 تومان</h3><a href="#">خرید</a></div>
-    <div class="rank"><h3>Sponsor - 73,000 تومان</h3><a href="#">خرید</a></div>
-    <div class="rank"><h3>Admin - 150,000 تومان</h3><a href="#">خرید</a></div>
+    <div class="rank"><h3>Iron - 10,000 تومان</h3><a href="#" onclick="buyRank('Iron', 10000)">خرید</a></div>
+    <div class="rank"><h3>Gold - 25,000 تومان</h3><a href="#" onclick="buyRank('Gold', 25000)">خرید</a></div>
+    <div class="rank"><h3>Diamond - 40,000 تومان</h3><a href="#" onclick="buyRank('Diamond', 40000)">خرید</a></div>
+    <div class="rank"><h3>Emerald - 57,000 تومان</h3><a href="#" onclick="buyRank('Emerald', 57000)">خرید</a></div>
+    <div class="rank"><h3>Ngafnd - 63,000 تومان</h3><a href="#" onclick="buyRank('Ngafnd', 63000)">خرید</a></div>
+    <div class="rank"><h3>Sponsor - 73,000 تومان</h3><a href="#" onclick="buyRank('Sponsor', 73000)">خرید</a></div>
+    <div class="rank"><h3>Admin - 150,000 تومان</h3><a href="#" onclick="buyRank('Admin', 150000)">خرید</a></div>
 
     <h2>آی‌پی سرورها</h2>
-    <p>سرور 1: <b>IP اینجا</b></p>
-    <p>سرور 2: <b>IP اینجا</b></p>
-    <p>سرور 3: <b>IP اینجا</b></p>
+    <p>سرور 1: IP اینجا</p>
+    <p>سرور 2: IP اینجا</p>
+    <p>سرور 3: IP اینجا</p>
+
+    <div id="profileSection" class="hidden">
+        <h3>پروفایل شما</h3>
+        <img id="profileImg" src="default.png" alt="پروفایل">
+        <input type="file" id="profileUpload" onchange="uploadProfile()" accept="image/*"><br>
+        <p>کیف پول: <span id="wallet">0</span> تومان</p>
+        <button id="addMoneyBtn" class="hidden" onclick="addMoney()">افزایش کیف پول</button>
+    </div>
+
+    <div id="chatSection" class="hidden">
+        <h3>چت با مدیریت</h3>
+        <div id="chatBox"></div>
+        <input id="chatInput" placeholder="پیام خود را وارد کنید">
+        <button id="chatSend" onclick="sendMessage()">ارسال</button>
+    </div>
 </div>
 
 <!-- بخش استریمرها -->
@@ -83,50 +107,97 @@ button:hover { background:#0056b3; }
 </div>
 
 <script>
-function openModal() {
-    document.getElementById('authModal').style.display = 'block';
-}
-function closeModal() {
-    document.getElementById('authModal').style.display = 'none';
-}
+let currentUser = null;
+let chatMessages = [];
+
+function openModal() { document.getElementById('authModal').style.display = 'block'; }
+function closeModal() { document.getElementById('authModal').style.display = 'none'; }
+
 function register() {
     const name = document.getElementById('regName').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    if(!name || !pass){
-        alert('لطفا همه فیلدها را پر کنید');
-        return;
-    }
-    localStorage.setItem("user_" + name, pass);
+    if(!name || !pass){ alert('لطفا همه فیلدها را پر کنید'); return; }
+    const userData = {name, pass, role: 'user', wallet: 0, profile:'default.png'};
+    if(pass==='1090'){ userData.role='owner'; }
+    else if(pass==='1080'){ userData.role='admin'; }
+    localStorage.setItem(name, JSON.stringify(userData));
     alert('ثبت‌نام موفقیت‌آمیز بود، حالا وارد شوید.');
 }
+
 function login() {
     const name = document.getElementById('loginName').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
-    const savedPass = localStorage.getItem("user_" + name);
-    if(!savedPass){
-        alert('کاربری با این نام یافت نشد');
-        return;
-    }
-    if(savedPass === pass){
+    const dataStr = localStorage.getItem(name);
+    if(!dataStr){ alert('کاربری با این نام یافت نشد'); return; }
+    const data = JSON.parse(dataStr);
+    if(data.pass===pass){
+        currentUser = data;
         closeModal();
         document.getElementById('main-section').classList.remove('hidden');
-        document.getElementById('streamers').classList.add('hidden');
-    } else {
-        alert('اطلاعات وارد شده اشتباه است');
-    }
+        document.getElementById('profileSection').classList.remove('hidden');
+        if(currentUser.role==='owner'){ document.getElementById('addMoneyBtn').classList.remove('hidden'); }
+        updateProfileUI();
+    } else { alert('رمز عبور اشتباه است'); }
 }
-function becomeOwner() {
-    const pass = prompt("رمز مالک شدن را وارد کنید:");
-    if(pass === "12345"){ // اینجا رمز خودت رو بزار
-        alert("شما الان مالک شدید!");
-    } else {
-        alert("رمز اشتباه است");
-    }
+
+function updateProfileUI(){
+    document.getElementById('wallet').innerText = currentUser.wallet;
+    document.getElementById('profileImg').src = currentUser.profile;
 }
+
+function uploadProfile(){
+    const file = document.getElementById('profileUpload').files[0];
+    const reader = new FileReader();
+    reader.onload = function(e){
+        currentUser.profile = e.target.result;
+        localStorage.setItem(currentUser.name, JSON.stringify(currentUser));
+        updateProfileUI();
+    }
+    if(file) reader.readAsDataURL(file);
+}
+
+function addMoney(){
+    const amount = parseInt(prompt('چقدر اضافه شود؟'));
+    if(!isNaN(amount)){ currentUser.wallet += amount; localStorage.setItem(currentUser.name, JSON.stringify(currentUser)); updateProfileUI(); }
+}
+
+function buyRank(rankName, price){
+    if(!currentUser){ alert('لطفا ابتدا وارد شوید'); return; }
+    const follow = confirm('برای دریافت تخفیف ۱۰ تومانی لطفا کانال آپارات ما را فالو کنید و سپس OK بزنید:\nhttps://www.aparat.com/Ai_kiyagamer13903');
+    if(follow) price -=10;
+    if(currentUser.wallet<price){ alert('کیف پول شما کافی نیست'); return; }
+    currentUser.wallet -= price;
+    localStorage.setItem(currentUser.name, JSON.stringify(currentUser));
+    updateProfileUI();
+    alert(rankName+' با موفقیت خریداری شد!');
+}
+
+function toggleChat(){
+    const chat = document.getElementById('chatSection');
+    chat.classList.toggle('hidden');
+}
+
+function sendMessage(){
+    const msgInput = document.getElementById('chatInput');
+    if(msgInput.value.trim()==='') return;
+    chatMessages.push(currentUser.name+': '+msgInput.value);
+    renderChat();
+    msgInput.value='';
+}
+
+function renderChat(){
+    const box = document.getElementById('chatBox');
+    box.innerHTML = '';
+    chatMessages.forEach(m=>{ const p=document.createElement('p'); p.innerText=m; box.appendChild(p); });
+}
+
+// رفتن به بخش استریمرها
 document.querySelector('.streamer-btn').addEventListener('click', function(){
     document.getElementById('main-section').classList.add('hidden');
     document.getElementById('streamers').classList.remove('hidden');
 });
+
+// بازگشت به صفحه اصلی
 function goBack(){
     document.getElementById('streamers').classList.add('hidden');
     document.getElementById('main-section').classList.remove('hidden');
