@@ -6,11 +6,11 @@
 <style>
 body { font-family:sans-serif; background:#f2f2f2; margin:0; padding:0; direction:rtl; }
 header { background:#222; color:white; padding:10px 20px; font-size:24px; display:flex; justify-content:space-between; align-items:center; }
-header .left { display:flex; gap:10px; align-items:center; }
+header .left { display:flex; gap:10px; }
 header a { color:white; text-decoration:none; padding:8px 12px; border-radius:5px; }
 header a.support-btn { background:#28a745; }
 header a.streamer-btn { background:#ff9800; }
-header button { padding:8px 12px; border:none; border-radius:5px; cursor:pointer; }
+header button { padding:8px 12px; border:none; border-radius:5px; cursor:pointer; background:#007bff; color:white; }
 .container { max-width:1000px; margin:auto; padding:20px; }
 .rank { display:inline-block; background:white; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); padding:15px; margin:10px; width:180px; vertical-align:top; text-align:center; }
 .rank h3 { margin:10px 0; }
@@ -22,22 +22,24 @@ header button { padding:8px 12px; border:none; border-radius:5px; cursor:pointer
 .modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); }
 .modal-content { background:white; margin:10% auto; padding:20px; border-radius:10px; width:300px; text-align:center; }
 input { width:90%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:16px; }
-button { padding:10px 20px; margin:10px 5px; border:none; border-radius:5px; background:#007bff; color:white; font-weight:bold; cursor:pointer; }
-button:hover { background:#0056b3; }
 .close-btn { background:red; }
+button:hover { opacity:0.9; }
 
 /* دکمه بازگشت */
 .back-btn { background:#ff9800; color:white; border:none; border-radius:5px; padding:8px 12px; cursor:pointer; font-size:14px; }
 .back-btn:hover { background:#e68900; }
 
-/* چت مدیریت */
-#chatBox { background:#ffc0cb; padding:10px; border-radius:10px; max-height:300px; overflow-y:auto; margin-top:10px; }
-#chatInput { width:80%; padding:5px; }
-#chatSend { padding:5px 10px; background:#ff4081; color:white; border:none; border-radius:5px; cursor:pointer; }
+/* پروفایل */
+#profile { background:#fff; padding:15px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:20px; }
+#profile img { width:100px; height:100px; border-radius:50%; display:block; margin:auto; }
 
-/* بخش پروفایل */
-#profileSection { background:white; padding:15px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-top:10px; }
-#profileSection img { width:100px; height:100px; border-radius:50%; object-fit:cover; }
+/* چت */
+#chatBox { background:pink; padding:10px; border-radius:10px; max-height:400px; overflow-y:auto; margin-top:10px; }
+#chatInput { width:80%; padding:5px; }
+#chatSend { padding:5px 10px; }
+
+/* پنل مالک/ادمین */
+#ownerPanel, #adminPanel { background:#ffe; padding:10px; margin:10px 0; border-radius:10px; }
 </style>
 </head>
 <body>
@@ -52,35 +54,28 @@ button:hover { background:#0056b3; }
     <button onclick="openModal()">ثبت‌نام / ورود</button>
 </header>
 
-<div id="main-section" class="container">
+<div id="profile" class="hidden">
+    <h3>پروفایل شما</h3>
+    <img id="profilePic" src="default.png" alt="عکس پروفایل">
+    <input type="text" id="setPic" placeholder="لینک عکس خودت">
+    <button onclick="changePic()">ثبت عکس</button>
+    <p>کیف پول: <span id="wallet">0</span> تومان</p>
+</div>
+
+<div id="main-section" class="container hidden">
     <h2>خرید رنک</h2>
-    <div class="rank"><h3>Iron - 10,000 تومان</h3><a href="#" onclick="buyRank('Iron', 10000)">خرید</a></div>
-    <div class="rank"><h3>Gold - 25,000 تومان</h3><a href="#" onclick="buyRank('Gold', 25000)">خرید</a></div>
-    <div class="rank"><h3>Diamond - 40,000 تومان</h3><a href="#" onclick="buyRank('Diamond', 40000)">خرید</a></div>
-    <div class="rank"><h3>Emerald - 57,000 تومان</h3><a href="#" onclick="buyRank('Emerald', 57000)">خرید</a></div>
-    <div class="rank"><h3>Ngafnd - 63,000 تومان</h3><a href="#" onclick="buyRank('Ngafnd', 63000)">خرید</a></div>
-    <div class="rank"><h3>Sponsor - 73,000 تومان</h3><a href="#" onclick="buyRank('Sponsor', 73000)">خرید</a></div>
-    <div class="rank"><h3>Admin - 150,000 تومان</h3><a href="#" onclick="buyRank('Admin', 150000)">خرید</a></div>
+    <div class="rank"><h3>Iron - 10,000 تومان</h3><a href="#" onclick="buyRank('Iron',10000)">خرید</a></div>
+    <div class="rank"><h3>Gold - 25,000 تومان</h3><a href="#" onclick="buyRank('Gold',25000)">خرید</a></div>
+    <div class="rank"><h3>Diamond - 40,000 تومان</h3><a href="#" onclick="buyRank('Diamond',40000)">خرید</a></div>
+    <div class="rank"><h3>Emerald - 57,000 تومان</h3><a href="#" onclick="buyRank('Emerald',57000)">خرید</a></div>
+    <div class="rank"><h3>Ngafnd - 63,000 تومان</h3><a href="#" onclick="buyRank('Ngafnd',63000)">خرید</a></div>
+    <div class="rank"><h3>Sponsor - 73,000 تومان</h3><a href="#" onclick="buyRank('Sponsor',73000)">خرید</a></div>
+    <div class="rank"><h3>Admin - 150,000 تومان</h3><a href="#" onclick="buyRank('Admin',150000)">خرید</a></div>
 
     <h2>آی‌پی سرورها</h2>
     <p>سرور 1: IP اینجا</p>
     <p>سرور 2: IP اینجا</p>
     <p>سرور 3: IP اینجا</p>
-
-    <div id="profileSection" class="hidden">
-        <h3>پروفایل شما</h3>
-        <img id="profileImg" src="default.png" alt="پروفایل">
-        <input type="file" id="profileUpload" onchange="uploadProfile()" accept="image/*"><br>
-        <p>کیف پول: <span id="wallet">0</span> تومان</p>
-        <button id="addMoneyBtn" class="hidden" onclick="addMoney()">افزایش کیف پول</button>
-    </div>
-
-    <div id="chatSection" class="hidden">
-        <h3>چت با مدیریت</h3>
-        <div id="chatBox"></div>
-        <input id="chatInput" placeholder="پیام خود را وارد کنید">
-        <button id="chatSend" onclick="sendMessage()">ارسال</button>
-    </div>
 </div>
 
 <!-- بخش استریمرها -->
@@ -91,15 +86,35 @@ button:hover { background:#0056b3; }
     <img src="streamer2.jpg" alt="استریمر 2" style="width:200px; margin:10px;">
 </div>
 
+<!-- پنل مالک -->
+<div id="ownerPanel" class="hidden">
+    <h3>پنل مالک</h3>
+    <button onclick="increaseWallet()">افزایش کیف پول همه</button>
+</div>
+
+<!-- پنل ادمین -->
+<div id="adminPanel" class="hidden">
+    <h3>پنل ادمین</h3>
+    <p>امکانات محدود</p>
+</div>
+
+<!-- چت با مدیریت -->
+<div id="chat" class="hidden">
+    <h3>چت با مدیریت</h3>
+    <div id="chatBox"></div>
+    <input type="text" id="chatInput" placeholder="پیام خودت">
+    <button id="chatSend">ارسال</button>
+</div>
+
 <!-- Modal ثبت‌نام / ورود -->
 <div id="authModal" class="modal">
     <div class="modal-content">
         <h2>ثبت‌نام</h2>
-        <input type="text" id="regName" placeholder="نام کاربری">
+        <input type="text" id="regName" placeholder="اسم شما">
         <input type="password" id="regPass" placeholder="رمز عبور">
         <button onclick="register()">ثبت‌نام</button>
         <h2>ورود</h2>
-        <input type="text" id="loginName" placeholder="نام کاربری">
+        <input type="text" id="loginName" placeholder="اسم شما">
         <input type="password" id="loginPass" placeholder="رمز عبور">
         <button onclick="login()">ورود</button>
         <button class="close-btn" onclick="closeModal()">بستن</button>
@@ -108,96 +123,71 @@ button:hover { background:#0056b3; }
 
 <script>
 let currentUser = null;
-let chatMessages = [];
+let chatVisible = false;
 
-function openModal() { document.getElementById('authModal').style.display = 'block'; }
-function closeModal() { document.getElementById('authModal').style.display = 'none'; }
+function openModal() { document.getElementById('authModal').style.display='block'; }
+function closeModal() { document.getElementById('authModal').style.display='none'; }
 
-function register() {
+function register(){
     const name = document.getElementById('regName').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    if(!name || !pass){ alert('لطفا همه فیلدها را پر کنید'); return; }
-    const userData = {name, pass, role: 'user', wallet: 0, profile:'default.png'};
-    if(pass==='1090'){ userData.role='owner'; }
-    else if(pass==='1080'){ userData.role='admin'; }
-    localStorage.setItem(name, JSON.stringify(userData));
+    if(!name || !pass){ alert('همه فیلدها را پر کنید'); return; }
+    localStorage.setItem(name, JSON.stringify({name,pass,wallet:0,pic:'default.png'}));
     alert('ثبت‌نام موفقیت‌آمیز بود، حالا وارد شوید.');
 }
 
-function login() {
+function login(){
     const name = document.getElementById('loginName').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
     const dataStr = localStorage.getItem(name);
-    if(!dataStr){ alert('کاربری با این نام یافت نشد'); return; }
+    if(!dataStr){ alert('کاربری با این اسم یافت نشد'); return; }
     const data = JSON.parse(dataStr);
     if(data.pass===pass){
         currentUser = data;
         closeModal();
         document.getElementById('main-section').classList.remove('hidden');
-        document.getElementById('profileSection').classList.remove('hidden');
-        if(currentUser.role==='owner'){ document.getElementById('addMoneyBtn').classList.remove('hidden'); }
-        updateProfileUI();
-    } else { alert('رمز عبور اشتباه است'); }
+        document.getElementById('profile').classList.remove('hidden');
+        document.getElementById('wallet').innerText = data.wallet;
+        document.getElementById('profilePic').src = data.pic;
+        // مالک و ادمین
+        if(pass==='1090') document.getElementById('ownerPanel').classList.remove('hidden');
+        if(pass==='1080') document.getElementById('adminPanel').classList.remove('hidden');
+    } else { alert('رمز اشتباه است'); }
 }
 
-function updateProfileUI(){
-    document.getElementById('wallet').innerText = currentUser.wallet;
-    document.getElementById('profileImg').src = currentUser.profile;
+function changePic(){
+    const url = document.getElementById('setPic').value.trim();
+    if(url){ currentUser.pic=url; localStorage.setItem(currentUser.name, JSON.stringify(currentUser)); document.getElementById('profilePic').src=url; }
 }
 
-function uploadProfile(){
-    const file = document.getElementById('profileUpload').files[0];
-    const reader = new FileReader();
-    reader.onload = function(e){
-        currentUser.profile = e.target.result;
-        localStorage.setItem(currentUser.name, JSON.stringify(currentUser));
-        updateProfileUI();
-    }
-    if(file) reader.readAsDataURL(file);
-}
-
-function addMoney(){
-    const amount = parseInt(prompt('چقدر اضافه شود؟'));
-    if(!isNaN(amount)){ currentUser.wallet += amount; localStorage.setItem(currentUser.name, JSON.stringify(currentUser)); updateProfileUI(); }
-}
-
-function buyRank(rankName, price){
-    if(!currentUser){ alert('لطفا ابتدا وارد شوید'); return; }
-    const follow = confirm('برای دریافت تخفیف ۱۰ تومانی لطفا کانال آپارات ما را فالو کنید و سپس OK بزنید:\nhttps://www.aparat.com/Ai_kiyagamer13903');
-    if(follow) price -=10;
-    if(currentUser.wallet<price){ alert('کیف پول شما کافی نیست'); return; }
-    currentUser.wallet -= price;
+function increaseWallet(){
+    currentUser.wallet += 1000;
     localStorage.setItem(currentUser.name, JSON.stringify(currentUser));
-    updateProfileUI();
-    alert(rankName+' با موفقیت خریداری شد!');
+    document.getElementById('wallet').innerText = currentUser.wallet;
 }
 
 function toggleChat(){
-    const chat = document.getElementById('chatSection');
-    chat.classList.toggle('hidden');
+    chatVisible = !chatVisible;
+    document.getElementById('chat').classList.toggle('hidden', !chatVisible);
 }
 
-function sendMessage(){
-    const msgInput = document.getElementById('chatInput');
-    if(msgInput.value.trim()==='') return;
-    chatMessages.push(currentUser.name+': '+msgInput.value);
-    renderChat();
-    msgInput.value='';
-}
+document.getElementById('chatSend').addEventListener('click', function(){
+    const msg = document.getElementById('chatInput').value.trim();
+    if(msg){
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML += '<p><b>'+currentUser.name+':</b> '+msg+'</p>';
+        document.getElementById('chatInput').value='';
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+});
 
-function renderChat(){
-    const box = document.getElementById('chatBox');
-    box.innerHTML = '';
-    chatMessages.forEach(m=>{ const p=document.createElement('p'); p.innerText=m; box.appendChild(p); });
+function buyRank(rank,price){
+    alert('برای خرید '+rank+' لطفا ابتدا کانال آپارات ما را فالو کنید: https://www.aparat.com/Ai_kiyagamer13903\nبا فالو کردن 10 تومان تخفیف دریافت میکنید.');
 }
-
-// رفتن به بخش استریمرها
 document.querySelector('.streamer-btn').addEventListener('click', function(){
     document.getElementById('main-section').classList.add('hidden');
     document.getElementById('streamers').classList.remove('hidden');
 });
-
-// بازگشت به صفحه اصلی
 function goBack(){
     document.getElementById('streamers').classList.add('hidden');
     document.getElementById('main-section').classList.remove('hidden');
