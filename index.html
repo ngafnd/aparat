@@ -4,91 +4,48 @@
 <meta charset="UTF-8">
 <title>ngafnd - خرید رنک</title>
 <style>
-body { font-family:sans-serif; background:#f2f2f2; margin:0; padding:0; }
+body { font-family:sans-serif; background:#f2f2f2; margin:0; padding:0; direction:rtl; }
 header { background:#222; color:white; padding:10px 20px; font-size:24px; display:flex; justify-content:space-between; align-items:center; }
-header a.support-btn { padding:10px 15px; border-radius:5px; text-decoration:none; color:white; font-weight:bold; }
+header .left { display:flex; gap:10px; }
+header a { color:white; text-decoration:none; padding:8px 12px; border-radius:5px; }
+header a.support-btn { background:#28a745; }
+header a.streamer-btn { background:#ff9800; }
 .container { max-width:1000px; margin:auto; padding:20px; }
-.card { background:white; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2); padding:20px; margin:20px auto; width:300px; text-align:center; }
-input { width:90%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:16px; }
-button { padding:10px 20px; margin:10px 5px; border:none; border-radius:5px; background:#007bff; color:white; font-weight:bold; cursor:pointer; transition:0.3s; }
-button:hover { background:#0056b3; }
-.rank { display:inline-block; background:white; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); padding:15px; margin:10px; width:180px; vertical-align:top; }
+.rank { display:inline-block; background:white; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2); padding:15px; margin:10px; width:180px; vertical-align:top; text-align:center; }
 .rank h3 { margin:10px 0; }
 .rank a { display:block; margin-top:10px; background:#28a745; color:white; text-decoration:none; padding:8px; border-radius:5px; }
 .rank a:hover { background:#1e7e34; }
-h2 { margin-top:20px; }
 .hidden { display:none; }
-ul { list-style:none; padding:0; }
-ul li { background:white; margin:5px 0; padding:10px; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-ul li a { color:#007bff; text-decoration:none; }
-ul li a:hover { text-decoration:underline; }
+
+/* Modal */
+.modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); }
+.modal-content { background:white; margin:10% auto; padding:20px; border-radius:10px; width:300px; text-align:center; }
+input { width:90%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:16px; }
+button { padding:10px 20px; margin:10px 5px; border:none; border-radius:5px; background:#007bff; color:white; font-weight:bold; cursor:pointer; }
+button:hover { background:#0056b3; }
+.close-btn { background:red; }
 </style>
 </head>
 <body>
 
 <header>
-    <a class="support-btn" href="#streamers-section" style="background:#ffc107; margin-right:10px;">لیست استریمرها</a>
+    <div class="left">
+        <a class="support-btn" href="https://reymit.ir/kiyagamer13903" target="_blank">💖 حمایت</a>
+        <a class="streamer-btn" href="#streamers">🎥 لیست استریمرها</a>
+    </div>
     ngafnd
-    <a class="support-btn" href="https://reymit.ir/kiyagamer13903" target="_blank" style="background:#28a745;">💖 حمایت</a>
+    <button onclick="openModal()">ثبت‌نام / ورود</button>
 </header>
 
-<!-- بخش لیست استریمرها -->
-<div id="streamers-section" class="container">
-    <h2>لیست استریمرها</h2>
-    <ul>
-        <li>Streamer 1 - <a href="#">لینک</a></li>
-        <li>Streamer 2 - <a href="#">لینک</a></li>
-        <li>Streamer 3 - <a href="#">لینک</a></li>
-        <!-- برای اضافه کردن استریمر جدید، یک <li> جدید بساز -->
-    </ul>
-</div>
-
-<div id="auth-section" class="container">
-    <div class="card">
-        <h2>ثبت‌نام</h2>
-        <input type="email" id="regEmail" placeholder="جیمیل">
-        <input type="password" id="regPass" placeholder="رمز عبور">
-        <button onclick="register()">ثبت‌نام</button>
-    </div>
-
-    <div class="card">
-        <h2>ورود</h2>
-        <input type="email" id="loginEmail" placeholder="جیمیل">
-        <input type="password" id="loginPass" placeholder="رمز عبور">
-        <button onclick="login()">ورود</button>
-    </div>
-</div>
-
-<div id="main-section" class="container hidden">
+<div id="main-section" class="container">
     <h2>خرید رنک</h2>
-    <div class="rank">
-        <h3>Iron - 10,000 تومان</h3>
-        <a href="#">خرید</a>
-    </div>
-    <div class="rank">
-        <h3>Gold - 25,000 تومان</h3>
-        <a href="#">خرید</a>
-    </div>
-    <div class="rank">
-        <h3>Diamond - 40,000 تومان</h3>
-        <a href="#">خرید</a>
-    </div>
-    <div class="rank">
-        <h3>Emerald - 57,000 تومان</h3>
-        <a href="#">خرید</a>
-    </div>
-    <div class="rank">
-        <h3>Ngafnd - 63,000 تومان</h3>
-        <a href="#">خرید</a>
-    </div>
-    <div class="rank">
-        <h3>Sponsor - 73,000 تومان</h3>
-        <a href="#">خرید</a>
-    </div>
-    <div class="rank">
-        <h3>Admin - 150,000 تومان</h3>
-        <a href="#">خرید</a>
-    </div>
+    <div class="rank"><h3>Iron - 10,000 تومان</h3><a href="#">خرید</a></div>
+    <div class="rank"><h3>Gold - 25,000 تومان</h3><a href="#">خرید</a></div>
+    <div class="rank"><h3>Diamond - 40,000 تومان</h3><a href="#">خرید</a></div>
+    <div class="rank"><h3>Emerald - 57,000 تومان</h3><a href="#">خرید</a></div>
+    <div class="rank"><h3>Ngafnd - 63,000 تومان</h3><a href="#">خرید</a></div>
+    <div class="rank"><h3>Sponsor - 73,000 تومان</h3><a href="#">خرید</a></div>
+    <div class="rank"><h3>Admin - 150,000 تومان</h3><a href="#">خرید</a></div>
 
     <h2>آی‌پی سرورها</h2>
     <p>سرور 1: IP اینجا</p>
@@ -96,7 +53,36 @@ ul li a:hover { text-decoration:underline; }
     <p>سرور 3: IP اینجا</p>
 </div>
 
+<!-- بخش استریمرها -->
+<div id="streamers" class="container hidden">
+    <h2>لیست استریمرها</h2>
+    <p>اینجا عکس استریمرها رو بزار:</p>
+    <img src="streamer1.jpg" alt="استریمر 1" style="width:200px; margin:10px;">
+    <img src="streamer2.jpg" alt="استریمر 2" style="width:200px; margin:10px;">
+</div>
+
+<!-- Modal ثبت‌نام / ورود -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <h2>ثبت‌نام</h2>
+        <input type="email" id="regEmail" placeholder="جیمیل">
+        <input type="password" id="regPass" placeholder="رمز عبور">
+        <button onclick="register()">ثبت‌نام</button>
+        <h2>ورود</h2>
+        <input type="email" id="loginEmail" placeholder="جیمیل">
+        <input type="password" id="loginPass" placeholder="رمز عبور">
+        <button onclick="login()">ورود</button>
+        <button class="close-btn" onclick="closeModal()">بستن</button>
+    </div>
+</div>
+
 <script>
+function openModal() {
+    document.getElementById('authModal').style.display = 'block';
+}
+function closeModal() {
+    document.getElementById('authModal').style.display = 'none';
+}
 function register() {
     const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPass').value.trim();
@@ -108,7 +94,6 @@ function register() {
     localStorage.setItem(email, JSON.stringify(userData));
     alert('ثبت‌نام موفقیت‌آمیز بود، حالا وارد شوید.');
 }
-
 function login() {
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
@@ -119,12 +104,19 @@ function login() {
     }
     const data = JSON.parse(dataStr);
     if(data.pass===pass){
-        document.getElementById('auth-section').classList.add('hidden');
+        closeModal();
         document.getElementById('main-section').classList.remove('hidden');
+        document.getElementById('streamers').classList.add('hidden');
     } else {
         alert('اطلاعات وارد شده اشتباه است');
     }
 }
+
+// لینک لیست استریمرها
+document.querySelector('.streamer-btn').addEventListener('click', function(){
+    document.getElementById('main-section').classList.add('hidden');
+    document.getElementById('streamers').classList.remove('hidden');
+});
 </script>
 
 </body>
